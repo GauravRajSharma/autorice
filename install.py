@@ -3,43 +3,33 @@ from subprocess import call
 from pathlib import Path
 
 # Global Variables
-# file = f'/tmp/program-dotfiles.csv'
-file_test = f'./test/test.csv'
-git_programs_location = f'$HOME/Documents/programs'
-git_programs_test = f'$HOME/Documents/test'
+file = f'/tmp/programs-dotfiles.csv'
+git_programs_location = Path.home() / 'Documents/programs'
 
 
 def print_app_profile(app_name, description):
-    print(f'|{app_name:<30}| {description}')
+    print(f'Installing | {app_name:<30} | {description}')
 
 
-with open(file=file_test) as p_file:
-    data = csv.reader(p_file, delimiter=',', quotechar='"')
-    tags = ['', 'A', 'P', 'N']
-    installer = {
-        '': lambda app_name: f'sudo pacman -Sy --noconfirm {app_name}',
-        'N': lambda app_name: f'sudo npm install {app_name} -g',
-        'P': lambda app_name: f'sudo pip install {app_name}',
-        'A': lambda app_name: f'yay -Sy --noconfirm {app_name}'
-    }
-    for tag, app_name, description in data:
-        if tag in tags:
-            print_app_profile(app_name, description)
-            call(installer[tag](app_name), shell=True)
-        if tag == 'G':
-            git_programs_path = Path(git_programs_test)
-            # print(app_name)
-            if git_programs_path.exists():
+if __name__ == "__main__":
+    with open(file=file) as p_file:
+        data = csv.reader(p_file, delimiter=',', quotechar='"')
+        tags = ['', 'A', 'P', 'N']
+        installer = {
+            '': lambda app_name: f'sudo pacman -Sy --noconfirm {app_name}',
+            'N': lambda app_name: f'sudo npm install {app_name} -g',
+            'P': lambda app_name: f'sudo pip install {app_name}',
+            'A': lambda app_name: f'yay -Sy --noconfirm {app_name}'
+        }
+        for tag, app_name, description in data:
+            call(['clear'], shell=True)
+            if tag in tags:
+                print_app_profile(app_name, description)
+                call(installer[tag](app_name), shell=True)
+            if tag == 'G':
+                path_app = app_name.split('/')[-1].split('.')[0]
+                print_app_profile(path_app, description)
+                if not git_programs_location.exists():
+                    git_programs_location.mkdir(parents=True, exist_ok=True)
                 call(
-                    f'pushd ;git clone {app_name}; popd;popd', shell=True)
-                print('Yes')
-            else:
-                print('NO')
-
-
-def main():
-    pass
-
-
-if __name__ == '__main__':
-    main()
+                    f'pushd {git_programs_location};git clone {app_name};pushd {path_app};sudo make install;popd; popd', shell=True)

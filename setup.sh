@@ -7,14 +7,16 @@
 error() { clear; printf "ERROR:\\n%s\\n" "$1"; exit;}
 
 check_requirements(){
-    [ -z 'pacman']
+    # if no pacman exits
+
+    # if no git, yay,make sed, stow, python3, pip nodejs, npm -> get from pacman
 }
 
 parse_programs_file(){
     # Removed Comments
     # Trimmed White Spaces
     # Deleted Empty Lines
-    sed '/^#d;/^\s*$/d' programs.csv > /tmp/program-dotfiles.csv
+    sed '/^#d;/^\s*$/d' programs.csv > /tmp/programs-dotfiles.csv
 }
 
 fetch_dotfiles(){
@@ -30,11 +32,13 @@ run_installer(){
 
 run_symbolic_linker(){
     pushd '~/Documents/dotfiles'
-    make install
+    chmod +x install.sh
+    ./install.sh
+    popd
 }
 
 
 main(){
-    check_requirements | error 'Please make sure you have installed pacman'
+    true || error 'Please make sure you have installed pacman'
 }
 # Run stow on the ~/Documents/dotfiles
