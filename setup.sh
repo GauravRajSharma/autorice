@@ -39,6 +39,11 @@ run_symbolic_linker(){
 
 
 main(){
-    true || error 'Please make sure you have installed pacman'
+	check_requirements || error "Checking Requirements failed. Make sure you have installed pacman!"
+	parse_program_file || error "Make sure installer folder consists programs.csv"
+	run_installer || error "Installer file not found!"
+	fetch_dotfiles || error "Unable to fetch dotfiles!"
+	run_symbolic_linker || error "Configuration .config / .script files failed!"
+
 }
 # Run stow on the ~/Documents/dotfiles
