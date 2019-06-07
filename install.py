@@ -12,7 +12,7 @@ def print_app_profile(app_name, description):
     print(f'Installing | {app_name:<30} | {description}')
 
 
-if __name__ == "__main__":
+if __name__ == "_f_main__":
     with open(file=file_) as p_file:
         data = csv.reader(p_file, delimiter=',', quotechar='"')
         tags = ['', 'A', 'P', 'N']
